@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WorkflowCore.Interface;
 
@@ -24,6 +26,12 @@ namespace WorkflowCore.Sample04
             string value = Console.ReadLine();
             host.PublishEvent("MyEvent", workflowId, value);
 
+            //MyDataClass data = new MyDataClass()
+            //{
+            //    Value1 = value
+            //};
+            //host.PublishEvent("MyEvent", workflowId, data, DateTime.Now);
+
             Console.ReadLine();
             host.Stop();
         }
@@ -33,22 +41,38 @@ namespace WorkflowCore.Sample04
             //setup dependency injection
             IServiceCollection services = new ServiceCollection();
             services.AddLogging();
-            services.AddWorkflow();
+
+            List<Type> typesToMap = new List<Type>();
+            typesToMap.Add(typeof(MyDataClass));
+
+            foreach (var typeToMap in typesToMap)
+            {
+                if (!BsonClassMap.IsClassMapRegistered(typeToMap))
+                {
+                    var classMap = new BsonClassMap(typeToMap);
+                    classMap.AutoMap();
+                    classMap.SetIgnoreExtraElements(true);
+
+                    BsonClassMap.RegisterClassMap(classMap);
+                }
+            }
+
+            //services.AddWorkflow();
             //services.AddWorkflow(x => x.UseMongoDB(@"mongodb://localhost:27017", "workflow"));
             //services.AddWorkflow(x => x.UseSqlServer(@"Server=.;Database=WorkflowCore;Trusted_Connection=True;", true, true));
             //services.AddWorkflow(x => x.UsePostgreSQL(@"Server=127.0.0.1;Port=5432;Database=workflow;User Id=postgres;", true, true));
             //services.AddWorkflow(x => x.UseSqlite(@"Data Source=database.db;", true));            
 
-            //services.AddWorkflow(x =>
-            //{
-            //    x.UseAzureSynchronization(@"UseDevelopmentStorage=true");
-            //    x.UseMongoDB(@"mongodb://localhost:27017", "workflow9999");
-            //});
+            services.AddWorkflow(x =>
+            {
+                x.UseAzureSynchronization(@"UseDevelopmentStorage=true");
+                x.UseMongoDB(@"mongodb://localhost:27017", "workflow");
+            });
 
             //services.AddWorkflow(x =>
             //{
-            //    x.UseSqlServer(@"Server=.\SQLEXPRESS;Database=WorkflowCore;Trusted_Connection=True;", true, true);
-            //    x.UseSqlServerLocking(@"Server=.\SQLEXPRESS;Database=WorkflowCore;Trusted_Connection=True;");
+            //    x.UseSqlServer(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true);
+            //    x.UseSqlServerLocking(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;");
             //});
 
             //services.AddWorkflow(cfg =>
@@ -75,6 +99,12 @@ namespace WorkflowCore.Sample04
             //x.UseRedlock(redis);
             //});
 
+            //services.AddWorkflow(x =>
+            //{
+            //    x.UseMongoDB(@"mongodb://localhost:27017", "workflow");
+            //    //x.UseSqlServerBroker(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true);
+            //    //x.UseSqlServerLocking(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;");
+            //});
 
             var serviceProvider = services.BuildServiceProvider();
 

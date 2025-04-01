@@ -7,6 +7,7 @@ using WorkflowCore.Models;
 
 namespace WorkflowCore.Services
 {
+    // Implementation
     /// <summary>
     /// Executes the workflow step and applies any <see cref="IWorkflowStepMiddleware"/> to the step.
     /// </summary>

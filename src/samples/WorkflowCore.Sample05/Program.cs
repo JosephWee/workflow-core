@@ -27,8 +27,8 @@ namespace WorkflowCore.Sample05
             //setup dependency injection
             IServiceCollection services = new ServiceCollection();
             services.AddLogging();
-            services.AddWorkflow();
-            //services.AddWorkflow(x => x.UseSqlServer(@"Server=.;Database=WorkflowCore;Trusted_Connection=True;"));
+            //services.AddWorkflow();
+            services.AddWorkflow(x => x.UseSqlServer(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true));
             
             var serviceProvider = services.BuildServiceProvider();
 

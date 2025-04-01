@@ -28,7 +28,8 @@ namespace WorkflowCore.Sample02
             //setup dependency injection
             IServiceCollection services = new ServiceCollection();
             services.AddLogging();
-            services.AddWorkflow();
+            //services.AddWorkflow();
+            services.AddWorkflow(x => x.UseMongoDB(@"mongodb://localhost:27017", "workflow"));
             var serviceProvider = services.BuildServiceProvider();
 
             return serviceProvider;

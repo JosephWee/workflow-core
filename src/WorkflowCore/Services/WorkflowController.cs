@@ -12,6 +12,7 @@ using WorkflowCore.Models.LifeCycleEvents;
 
 namespace WorkflowCore.Services
 {
+    //Implementation
     public class WorkflowController : IWorkflowController
     {
         private readonly IPersistenceProvider _persistenceStore;
@@ -121,7 +122,9 @@ namespace WorkflowCore.Services
             evt.IsProcessed = false;
             string eventId = await _persistenceStore.CreateEvent(evt);
 
+            DateTime dtQueueBegin = DateTime.Now;
             await _queueProvider.QueueWork(eventId, QueueType.Event);
+            DateTime dtQueueEnd = DateTime.Now;
         }
 
         public async Task<bool> SuspendWorkflow(string workflowId)

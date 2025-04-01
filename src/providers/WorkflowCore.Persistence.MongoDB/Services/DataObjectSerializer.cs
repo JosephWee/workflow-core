@@ -1,16 +1,23 @@
 ﻿using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson;
+using MDB = MongoDB;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 namespace WorkflowCore.Persistence.MongoDB.Services
 {
     public class DataObjectSerializer : SerializerBase<object>
     {
+
+#if DEBUG
+        public static ConcurrentDictionary<string, int> DeserializedCount = new ConcurrentDictionary<string, int>();
+#endif
+
         private static JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.Objects,
@@ -23,6 +30,26 @@ namespace WorkflowCore.Persistence.MongoDB.Services
                 var raw = BsonSerializer.Deserialize<string>(context.Reader);
                 return JsonConvert.DeserializeObject(raw, SerializerSettings);
             }
+            else if (context.Reader.CurrentBsonType == BsonType.Document)
+            {
+                var doc = BsonSerializer.Deserialize<BsonDocument>(context.Reader);
+
+                if (doc != null && doc.Contains("_t"))
+                {
+                    var actualType = BsonSerializer.LookupActualType(args.NominalType, doc["_t"]);
+
+                    if (actualType != null)
+                    {
+                        var obj1 = BsonSerializer.Deserialize(doc, actualType);
+
+#if DEBUG
+                        string key = doc.ToString();
+                        DataObjectSerializer.DeserializedCount.AddOrUpdate(key, 1, (k, v) => v + 1);
+#endif
+                        return obj1;
+                    }
+                }
+            }
 
             var obj = BsonSerializer.Deserialize(context.Reader, typeof(object));
             return obj;
@@ -33,10 +60,12 @@ namespace WorkflowCore.Persistence.MongoDB.Services
             BsonDocument doc;
             if (BsonClassMap.IsClassMapRegistered(value.GetType()))
             {
-                doc = value.ToBsonDocument();
+                //doc = value.ToBsonDocument();
+                doc = value.ToBsonDocument(value.GetType());
                 doc.Remove("_t");
                 doc.InsertAt(0, new BsonElement("_t", value.GetType().AssemblyQualifiedName));
                 AddTypeInformation(doc.Elements, value, string.Empty);
+                //ConvertMetaFormat(doc);
             }
             else
             {

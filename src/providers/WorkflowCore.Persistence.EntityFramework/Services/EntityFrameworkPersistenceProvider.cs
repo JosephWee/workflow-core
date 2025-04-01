@@ -247,6 +247,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
             }
         }
 
+        // Event Persistence Implementation
+        // Symbols not loaded for mongodb
         public async Task<IEnumerable<string>> GetRunnableEvents(DateTime asAt, CancellationToken cancellationToken = default)
         {
             var now = asAt.ToUniversalTime();
@@ -263,6 +265,7 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
             }
         }
 
+        // Event Persistence Implementation
         public async Task MarkEventProcessed(string id, CancellationToken cancellationToken = default)
         {
             using (var db = ConstructDbContext())

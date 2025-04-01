@@ -5,6 +5,7 @@ using WorkflowCore.Interface;
 
 namespace WorkflowCore.Models
 {
+    //Abstract
     public abstract class WorkflowStep
     {
         public abstract Type BodyType { get; }
