@@ -12,7 +12,7 @@ using WorkflowCore.Models.LifeCycleEvents;
 
 namespace WorkflowCore.Services
 {
-    //Implementation
+    // Implementation
     public class WorkflowController : IWorkflowController
     {
         private readonly IPersistenceProvider _persistenceStore;
@@ -40,23 +40,30 @@ namespace WorkflowCore.Services
 
         public Task<string> StartWorkflow(string workflowId, object data = null, string reference=null)
         {
+            //Console.WriteLine("WorkflowController.StartWorkflow");
+
             return StartWorkflow(workflowId, null, data, reference);
         }
 
         public Task<string> StartWorkflow(string workflowId, int? version, object data = null, string reference=null)
         {
+            //Console.WriteLine("WorkflowController.StartWorkflow");
+
             return StartWorkflow<object>(workflowId, version, data, reference);
         }
 
         public Task<string> StartWorkflow<TData>(string workflowId, TData data = null, string reference = null)
             where TData : class, new()
         {
+            //Console.WriteLine("WorkflowController.StartWorkflow");
+
             return StartWorkflow(workflowId, null, data, reference);
         }
 
         public async Task<string> StartWorkflow<TData>(string workflowId, int? version, TData data = null, string reference=null)
             where TData : class, new()
         {
+            //Console.WriteLine("WorkflowController.StartWorkflow");
 
             var def = _registry.GetDefinition(workflowId, version);
             if (def == null)
@@ -108,6 +115,8 @@ namespace WorkflowCore.Services
 
         public async Task PublishEvent(string eventName, string eventKey, object eventData, DateTime? effectiveDate = null)
         {
+            //Console.WriteLine("WorkflowController.PublishEvent");
+
             _logger.LogDebug("Creating event {EventName} {EventKey}", eventName, eventKey);
             Event evt = new Event();
 
@@ -129,6 +138,8 @@ namespace WorkflowCore.Services
 
         public async Task<bool> SuspendWorkflow(string workflowId)
         {
+            //Console.WriteLine("WorkflowController.SuspendWorkflow");
+
             if (!await _lockProvider.AcquireLock(workflowId, new CancellationToken()))
                 return false;
 
@@ -161,6 +172,8 @@ namespace WorkflowCore.Services
 
         public async Task<bool> ResumeWorkflow(string workflowId)
         {
+            //Console.WriteLine("WorkflowController.ResumeWorkflow");
+
             if (!await _lockProvider.AcquireLock(workflowId, new CancellationToken()))
             {
                 return false;
@@ -199,6 +212,8 @@ namespace WorkflowCore.Services
 
         public async Task<bool> TerminateWorkflow(string workflowId)
         {
+            //Console.WriteLine("WorkflowController.TerminateWorkflow");
+
             if (!await _lockProvider.AcquireLock(workflowId, new CancellationToken()))
             {
                 return false;
@@ -232,6 +247,8 @@ namespace WorkflowCore.Services
         public void RegisterWorkflow<TWorkflow>()
             where TWorkflow : IWorkflow
         {
+            //Console.WriteLine("WorkflowController.RegisterWorkflow");
+
             var wf = ActivatorUtilities.CreateInstance<TWorkflow>(_serviceProvider);
             _registry.RegisterWorkflow(wf);
         }
@@ -240,6 +257,8 @@ namespace WorkflowCore.Services
             where TWorkflow : IWorkflow<TData>
             where TData : new()
         {
+            //Console.WriteLine("WorkflowController.RegisterWorkflow");
+
             var wf = ActivatorUtilities.CreateInstance<TWorkflow>(_serviceProvider);
             _registry.RegisterWorkflow(wf);
         }

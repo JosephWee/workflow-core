@@ -17,7 +17,7 @@ namespace WorkflowCore.Sample04
             builder
                 .StartWith(context => ExecutionResult.Next())
                 .WaitFor("MyEvent", (data, context) => context.Workflow.Id, data => DateTime.Now)
-                //.WaitFor("MyEvent", (data) => "")
+                //.WaitFor("MyEvent", (data) => "") 
                     .Output(data => data.Value1, step => step.EventData)
                 .Then<CustomMessage>()
                     .Input(step => step.Message, data => "The data from the event is " + data.Value1)

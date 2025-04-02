@@ -28,6 +28,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<string> CreateEventSubscription(EventSubscription subscription, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.CreateEventSubscription");
+
             using (var db = ConstructDbContext())
             {
                 subscription.Id = Guid.NewGuid().ToString();
@@ -40,6 +42,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<string> CreateNewWorkflow(WorkflowInstance workflow, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.CreateNewWorkflow");
+
             using (var db = ConstructDbContext())
             {
                 workflow.Id = Guid.NewGuid().ToString();
@@ -52,6 +56,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<IEnumerable<string>> GetRunnableInstances(DateTime asAt, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetRunnableInstances");
+
             using (var db = ConstructDbContext())
             {
                 var now = asAt.ToUniversalTime().Ticks;
@@ -66,6 +72,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<IEnumerable<WorkflowInstance>> GetWorkflowInstances(WorkflowStatus? status, string type, DateTime? createdFrom, DateTime? createdTo, int skip, int take)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetWorkflowInstances");
+
             using (var db = ConstructDbContext())
             {
                 IQueryable<PersistedWorkflow> query = db.Set<PersistedWorkflow>()
@@ -98,6 +106,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<WorkflowInstance> GetWorkflowInstance(string Id, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetWorkflowInstance");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(Id);
@@ -116,6 +126,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<IEnumerable<WorkflowInstance>> GetWorkflowInstances(IEnumerable<string> ids, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetWorkflowInstances");
+
             if (ids == null)
             {
                 return new List<WorkflowInstance>();
@@ -136,6 +148,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task PersistWorkflow(WorkflowInstance workflow, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.PersistWorkflow");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(workflow.Id);
@@ -151,9 +165,11 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
                 await db.SaveChangesAsync(cancellationToken);
             }
         }
-		
-		public async Task PersistWorkflow(WorkflowInstance workflow, List<EventSubscription> subscriptions, CancellationToken cancellationToken = default)
+        
+        public async Task PersistWorkflow(WorkflowInstance workflow, List<EventSubscription> subscriptions, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.PersistWorkflow");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(workflow.Id);
@@ -180,6 +196,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task TerminateSubscription(string eventSubscriptionId, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.TerminateSubscription");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(eventSubscriptionId);
@@ -191,6 +209,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public virtual void EnsureStoreExists()
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.EnsureStoreExists");
+
             using (var context = ConstructDbContext())
             {
                 if (_canCreateDB && !_canMigrateDB)
@@ -209,6 +229,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<IEnumerable<EventSubscription>> GetSubscriptions(string eventName, string eventKey, DateTime asOf, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetSubscriptions");
+
             using (var db = ConstructDbContext())
             {
                 asOf = asOf.ToUniversalTime();
@@ -222,6 +244,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<string> CreateEvent(Event newEvent, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.CreateEvent");
+
             using (var db = ConstructDbContext())
             {
                 newEvent.Id = Guid.NewGuid().ToString();
@@ -234,6 +258,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<Event> GetEvent(string id, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetEvent");
+
             using (var db = ConstructDbContext())
             {
                 Guid uid = new Guid(id);
@@ -251,6 +277,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
         // Symbols not loaded for mongodb
         public async Task<IEnumerable<string>> GetRunnableEvents(DateTime asAt, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetRunnableEvents");
+
             var now = asAt.ToUniversalTime();
             using (var db = ConstructDbContext())
             {
@@ -265,9 +293,11 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
             }
         }
 
-        // Event Persistence Implementation
+        // Event Persistence Implementation 
         public async Task MarkEventProcessed(string id, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.MarkEventProcessed");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(id);
@@ -283,6 +313,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<IEnumerable<string>> GetEvents(string eventName, string eventKey, DateTime asOf, CancellationToken cancellationToken)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetEvents");
+
             using (var db = ConstructDbContext())
             {
                 var raw = await db.Set<PersistedEvent>()
@@ -302,6 +334,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task MarkEventUnprocessed(string id, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.MarkEventUnprocessed");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(id);
@@ -317,6 +351,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task PersistErrors(IEnumerable<ExecutionError> errors, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.PersistErrors");
+
             using (var db = ConstructDbContext())
             {
                 var executionErrors = errors as ExecutionError[] ?? errors.ToArray();
@@ -334,11 +370,15 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         private WorkflowDbContext ConstructDbContext()
         {
+            ////Console.WriteLine("EntityFrameworkPersistenceProvider.ConstructDbContext");
+
             return _contextFactory.Build();
         }
 
         public async Task<EventSubscription> GetSubscription(string eventSubscriptionId, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetSubscription");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(eventSubscriptionId);
@@ -350,6 +390,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<EventSubscription> GetFirstOpenSubscription(string eventName, string eventKey, DateTime asOf, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.GetFirstOpenSubscription");
+
             using (var db = ConstructDbContext())
             {
                 var raw = await db.Set<PersistedSubscription>().FirstOrDefaultAsync(x => x.EventName == eventName && x.EventKey == eventKey && x.SubscribeAsOf <= asOf && x.ExternalToken == null, cancellationToken);
@@ -360,6 +402,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task<bool> SetSubscriptionToken(string eventSubscriptionId, string token, string workerId, DateTime expiry, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.SetSubscriptionToken");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(eventSubscriptionId);
@@ -379,6 +423,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task ClearSubscriptionToken(string eventSubscriptionId, string token, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.ClearSubscriptionToken");
+
             using (var db = ConstructDbContext())
             {
                 var uid = new Guid(eventSubscriptionId);
@@ -399,6 +445,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task ScheduleCommand(ScheduledCommand command)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.ScheduleCommand");
+
             try
             {
                 using (var db = ConstructDbContext())
@@ -416,6 +464,8 @@ namespace WorkflowCore.Persistence.EntityFramework.Services
 
         public async Task ProcessCommands(DateTimeOffset asOf, Func<ScheduledCommand, Task> action, CancellationToken cancellationToken = default)
         {
+            //Console.WriteLine("EntityFrameworkPersistenceProvider.ProcessCommands");
+
             using (var db = ConstructDbContext())
             {
                 var cursor = db.Set<PersistedScheduledCommand>()

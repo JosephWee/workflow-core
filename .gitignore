@@ -247,3 +247,8 @@ ModelManifest.xml
 .idea/.idea.WorkflowCore/.idea
 riderModule.iml
 .DS_Store
+/src/samples/WorkflowCore.Sample02/WorkflowCore.Sample02.csproj.bak
+/src/samples/WorkflowCore.Sample03/WorkflowCore.Sample03.csproj.bak
+/src/samples/WorkflowCore.Sample04/WorkflowCore.Sample04.csproj.bak
+/src/samples/WorkflowCore.Sample05/WorkflowCore.Sample05.csproj.bak
+/src/samples/WorkflowCore.Sample06/WorkflowCore.Sample06.csproj.bak

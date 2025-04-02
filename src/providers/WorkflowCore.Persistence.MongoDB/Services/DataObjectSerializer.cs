@@ -42,7 +42,7 @@ namespace WorkflowCore.Persistence.MongoDB.Services
                     {
                         var obj1 = BsonSerializer.Deserialize(doc, actualType);
 
-#if DEBUG
+#if DEBUG 
                         string key = doc.ToString();
                         DataObjectSerializer.DeserializedCount.AddOrUpdate(key, 1, (k, v) => v + 1);
 #endif

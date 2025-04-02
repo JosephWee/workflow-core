@@ -22,8 +22,8 @@ namespace WorkflowCore.Sample04
             var initialData = new MyDataClass();
             var workflowId = host.StartWorkflow("EventSampleWorkflow", 1, initialData).Result;
             
-            Console.WriteLine("Enter value to publish");
-            string value = Console.ReadLine();
+            //Console.WriteLine("Enter value to publish");
+            string value = //Console.ReadLine();
             host.PublishEvent("MyEvent", workflowId, value);
 
             //MyDataClass data = new MyDataClass()
@@ -32,7 +32,7 @@ namespace WorkflowCore.Sample04
             //};
             //host.PublishEvent("MyEvent", workflowId, data, DateTime.Now);
 
-            Console.ReadLine();
+            //Console.ReadLine();
             host.Stop();
         }
 
@@ -63,17 +63,17 @@ namespace WorkflowCore.Sample04
             //services.AddWorkflow(x => x.UsePostgreSQL(@"Server=127.0.0.1;Port=5432;Database=workflow;User Id=postgres;", true, true));
             //services.AddWorkflow(x => x.UseSqlite(@"Data Source=database.db;", true));            
 
-            services.AddWorkflow(x =>
-            {
-                x.UseAzureSynchronization(@"UseDevelopmentStorage=true");
-                x.UseMongoDB(@"mongodb://localhost:27017", "workflow");
-            });
-
             //services.AddWorkflow(x =>
             //{
-            //    x.UseSqlServer(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true);
-            //    x.UseSqlServerLocking(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;");
+            //    x.UseAzureSynchronization(@"UseDevelopmentStorage=true");
+            //    x.UseMongoDB(@"mongodb://localhost:27017", "workflow");
             //});
+
+            services.AddWorkflow(x =>
+            {
+                x.UseSqlServer(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true);
+                x.UseSqlServerLocking(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;");
+            });
 
             //services.AddWorkflow(cfg =>
             //{
@@ -102,8 +102,8 @@ namespace WorkflowCore.Sample04
             //services.AddWorkflow(x =>
             //{
             //    x.UseMongoDB(@"mongodb://localhost:27017", "workflow");
-            //    //x.UseSqlServerBroker(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true);
-            //    //x.UseSqlServerLocking(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;");
+            //    x.UseSqlServerBroker(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true);
+            //    x.UseSqlServerLocking(@"Data Source=.\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;");
             //});
 
             var serviceProvider = services.BuildServiceProvider();

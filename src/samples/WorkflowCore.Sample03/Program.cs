@@ -65,7 +65,7 @@ namespace WorkflowCore.Sample03
 
             //services.AddWorkflow();
             //services.AddWorkflow(x => x.UseSqlServer("Data Source=.\\SQLEXPRESS2022;Initial Catalog=WorkflowCore;Integrated Security=True;Trust Server Certificate=True;", true, true));
-            services.AddWorkflow(x => x.UseMongoDB(@"mongodb://localhost:27017", "workflow"));
+            services.AddWorkflow(x => x.UseMongoDB(@"mongodb://localhost:27017", "workflow")); 
             var serviceProvider = services.BuildServiceProvider();
 
             return serviceProvider;
